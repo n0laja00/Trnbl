@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trnbl.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid
+        Margin="5"
+        Padding="5"
+        RowSpacing="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition Height="200" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".25*" />
+            <ColumnDefinition Width=".25*" />
+            <ColumnDefinition Width=".25*" />
+            <ColumnDefinition Width=".25*" />
+        </Grid.ColumnDefinitions>
+        <Entry
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Placeholder="Enter Player Name" />
+        <Button
+            Grid.Row="0"
+            Grid.Column="3"
+            Text="Enter" />
+
+        <StackLayout
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            Margin="0,25,0,0"
+            HorizontalOptions="Center">
+            <ScrollView Margin="0,5,0,5" Scale="1">
+                <CollectionView>
+                    <CollectionView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Edward</x:String>
+                            <x:String>Julia</x:String>
+                            <x:String>Julia</x:String>
+                            <x:String>Carl</x:String>
+                            <x:String>Carl</x:String>
+                        </x:Array>
+                    </CollectionView.ItemsSource>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,5">
+                                <Frame>
+                                    <Label Text="{Binding .}" />
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </StackLayout>
+
+        <Frame
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            BorderColor="Grey">
+            <Grid ColumnSpacing="2" RowSpacing="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".25*" />
+                    <RowDefinition Height=".25*" />
+                    <RowDefinition Height=".25*" />
+                    <RowDefinition Height=".25*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".33*" />
+                    <ColumnDefinition Width=".33*" />
+                    <ColumnDefinition Width=".33*" />
+                </Grid.ColumnDefinitions>
+                <!--#region First Row-->
+                <BoxView
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    Color="blue" />
+                <Label
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Move Up"
+                    VerticalOptions="Center" />
+                <BoxView
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Color="red" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Timer"
+                    VerticalOptions="Center" />
+                <BoxView
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    HorizontalOptions="End"
+                    Color="Purple" />
+                <Label
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Next Turn"
+                    VerticalOptions="Center" />
+                <!--#endregion-->
+
+                <!--#region second row-->
+                <BoxView
+                    Grid.Row="1"
+                    Grid.RowSpan="3"
+                    Grid.Column="1"
+                    Color="Green" />
+                <Label
+                    Grid.Row="1"
+                    Grid.RowSpan="3"
+                    Grid.Column="1"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Round #"
+                    VerticalOptions="Center" />
+                <!--#endregion-->
+
+                <!--#region Third row-->
+                <BoxView
+                    Grid.Row="2"
+                    Grid.RowSpan="3"
+                    Grid.Column="0"
+                    Color="BlueViolet" />
+                <Label
+                    Grid.Row="2"
+                    Grid.RowSpan="3"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Move Down"
+                    VerticalOptions="Center" />
+
+                <BoxView
+                    Grid.Row="2"
+                    Grid.RowSpan="3"
+                    Grid.Column="2"
+                    HorizontalOptions="End"
+                    Color="Aqua" />
+                <Label
+                    Grid.Row="2"
+                    Grid.RowSpan="3"
+                    Grid.Column="2"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Previous Turn"
+                    VerticalOptions="Center" />
+                <!--#endregion-->
+            </Grid>
+
+        </Frame>
+    </Grid>
+
+
+
+</ContentPage>

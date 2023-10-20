@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34212.112
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trnbl", "Trnbl\Trnbl.csproj", "{B823540C-7D25-47D6-89F4-BEECE78FC0CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B823540C-7D25-47D6-89F4-BEECE78FC0CA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26617C9A-C867-4C83-AF80-BC7F1C8C9293}
+	EndGlobalSection
+EndGlobal
