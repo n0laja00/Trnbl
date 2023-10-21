@@ -7,7 +7,7 @@
     Shell.FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="Trnbl"
+        Title="Turnable"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

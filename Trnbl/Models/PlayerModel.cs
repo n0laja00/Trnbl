@@ -1,25 +1,29 @@
 ﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Trnbl.Models;
 
-public class PlayerModel
+public partial class PlayerModel : ObservableObject
 {
 
-    public PlayerModel(int num, string name)
+    public PlayerModel(string name, int? num = null)
     {
-        OrderNumber = num;
+        Id = Guid.NewGuid();
+        OrderNumber = num ?? default(int);
         Name = name;
     }
 
-    public PlayerModel(string name)
-    {
-        Name = name;
-    }
+    public Guid Id { get; }
 
-    public int? OrderNumber { get; set; }
-    public string Name { get; set; }
-    public List<NoteModel> Notes { get; set; }
+    [ObservableProperty]
+    public int? orderNumber;
+
+    [ObservableProperty]
+    public string name;
+
+    [ObservableProperty]
+    public List<NoteModel> notes;
 
     public void AddNote(string content)
     {

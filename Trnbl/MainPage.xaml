@@ -2,7 +2,10 @@
 <ContentPage
     x:Class="Trnbl.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:Trnbl.Models"
+    xmlns:viewModel="clr-namespace:Trnbl.ViewModels"
+    x:DataType="viewModel:MainPageViewModel">
 
     <Grid
         Margin="5"
@@ -19,52 +22,68 @@
             <ColumnDefinition Width=".25*" />
             <ColumnDefinition Width=".25*" />
         </Grid.ColumnDefinitions>
+
         <Entry
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Placeholder="Enter Player Name" />
+            Placeholder="Turn #"
+            Text="{Binding OrdNum}" />
+
+        <Entry
+            Grid.Row="0"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Placeholder="Name"
+            Text="{Binding Name}" />
         <Button
             Grid.Row="0"
             Grid.Column="3"
+            Command="{Binding AddPlayerCommand}"
             Text="Enter" />
-
-        <StackLayout
+        <Grid
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="4"
-            Margin="0,25,0,0"
             HorizontalOptions="Center">
-            <ScrollView Margin="0,5,0,5" Scale="1">
-                <CollectionView>
-                    <CollectionView.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Edward</x:String>
-                            <x:String>Julia</x:String>
-                            <x:String>Julia</x:String>
-                            <x:String>Carl</x:String>
-                            <x:String>Carl</x:String>
-                        </x:Array>
-                    </CollectionView.ItemsSource>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,0,0,5">
-                                <Frame>
-                                    <Label Text="{Binding .}" />
-                                </Frame>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+            <ScrollView Grid.Column="0" Margin="0,5,0,5">
+                <StackLayout VerticalOptions="Fill">
+                    <CollectionView ItemsSource="{Binding Players}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="{x:Type models:PlayerModel}">
+                                <Grid Margin="0,0,0,5">
+                                    <Frame>
+                                        <Frame.GestureRecognizers>
+                                            <SwipeGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:MainPageViewModel}}, Path=DeletePlayerCommand}"
+                                                CommandParameter="{Binding .}"
+                                                Direction="Right" />
+                                        </Frame.GestureRecognizers>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label>
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="{}{0} - {1}">
+                                                        <Binding Path="OrderNumber" />
+                                                        <Binding Path="Name" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+
+                                        </StackLayout>
+                                    </Frame>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
             </ScrollView>
-        </StackLayout>
+        </Grid>
 
         <Frame
             Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="4"
             BorderColor="Grey">
-            <Grid ColumnSpacing="2" RowSpacing="2">
+            <Grid ColumnSpacing="4" RowSpacing="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height=".25*" />
                     <RowDefinition Height=".25*" />
@@ -92,45 +111,70 @@
                     VerticalOptions="Center" />
                 <BoxView
                     Grid.Row="0"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
                     HorizontalOptions="Center"
                     Color="red" />
-                <Label
+                <!--
+                    <Button
+                        x:Name="TimerButton"
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Grid.Column="1"
+                        FontSize="24"
+                        HorizontalOptions="Fill"
+                        Text="0:00"
+                        VerticalOptions="Fill">
+                        <Button.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnTimerClicked" />
+                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
+                        </Button.GestureRecognizers>
+                    </Button>
+                -->
+                <Button
                     Grid.Row="0"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
-                    FontSize="18"
-                    HorizontalOptions="Center"
-                    Text="Timer"
-                    VerticalOptions="Center" />
+                    FontSize="24"
+                    HorizontalOptions="Fill"
+                    Text="{Binding TimerButton}"
+                    VerticalOptions="Fill">
+                    <Button.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding StartTimerCommand}" NumberOfTapsRequired="1" />
+                        <TapGestureRecognizer Command="{Binding ClearTimerCommand}" NumberOfTapsRequired="2" />
+                    </Button.GestureRecognizers>
+                </Button>
                 <BoxView
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="2"
                     HorizontalOptions="End"
                     Color="Purple" />
-                <Label
+                <Button
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="2"
+                    Command="{Binding NextTurnCommand}"
                     FontSize="18"
-                    HorizontalOptions="Center"
+                    HorizontalOptions="Fill"
                     Text="Next Turn"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Fill" />
                 <!--#endregion-->
 
                 <!--#region second row-->
                 <BoxView
-                    Grid.Row="1"
-                    Grid.RowSpan="3"
+                    Grid.Row="2"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
                     Color="Green" />
                 <Label
-                    Grid.Row="1"
-                    Grid.RowSpan="3"
+                    x:Name="RoundCounter"
+                    Grid.Row="2"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
                     FontSize="18"
                     HorizontalOptions="Center"
-                    Text="Round #"
+                    Text="{Binding Counters.RoundCounter}"
                     VerticalOptions="Center" />
                 <!--#endregion-->
 
@@ -154,14 +198,15 @@
                     Grid.Column="2"
                     HorizontalOptions="End"
                     Color="Aqua" />
-                <Label
+                <Button
                     Grid.Row="2"
                     Grid.RowSpan="3"
                     Grid.Column="2"
+                    Command="{Binding PreviousTurnCommand}"
                     FontSize="18"
-                    HorizontalOptions="Center"
+                    HorizontalOptions="Fill"
                     Text="Previous Turn"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Fill" />
                 <!--#endregion-->
             </Grid>
 
