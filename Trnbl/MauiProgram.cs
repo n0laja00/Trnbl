@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using Trnbl.ViewModels;
 
 namespace Trnbl
@@ -10,6 +11,7 @@ namespace Trnbl
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -17,6 +19,9 @@ namespace Trnbl
                 });
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
+
+            builder.Services.AddTransient<NotesPage>();
+            builder.Services.AddTransient<NotesPageViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

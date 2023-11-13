@@ -15,6 +15,7 @@ public partial class CountersModel : ObservableObject
         RoundCounter = 1;
         RoundTurnCounter = 1;
         TurnCounter = 1;
+        PlayerCounter = 0;
     }
     [ObservableProperty]
     public TimeSpan timeCounter;
@@ -24,6 +25,8 @@ public partial class CountersModel : ObservableObject
     public int roundTurnCounter;
     [ObservableProperty]
     public int turnCounter;
+    [ObservableProperty]
+    public int playerCounter;
 
 
 

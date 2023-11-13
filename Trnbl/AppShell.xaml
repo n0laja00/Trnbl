@@ -6,9 +6,12 @@
     xmlns:local="clr-namespace:Trnbl"
     Shell.FlyoutBehavior="Disabled">
 
+
     <ShellContent
         Title="Turnable"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+
 
 </Shell>

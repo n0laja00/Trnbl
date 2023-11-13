@@ -3,24 +3,33 @@
     x:Class="Trnbl.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Trnbl.Converters"
     xmlns:models="clr-namespace:Trnbl.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModel="clr-namespace:Trnbl.ViewModels"
     x:DataType="viewModel:MainPageViewModel">
+    <ContentPage.Resources>
+        <local:ItemsLimiter x:Key="ItemsLimiter" />
+        <local:IsGreaterThan x:Key="IsGreaterThan" />
+    </ContentPage.Resources>
 
     <Grid
         Margin="5"
         Padding="5"
+        ColumnSpacing="5"
         RowSpacing="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".30*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="200" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".25*" />
             <ColumnDefinition Width=".25*" />
             <ColumnDefinition Width=".25*" />
-            <ColumnDefinition Width=".25*" />
+            <ColumnDefinition Width=".35*" />
         </Grid.ColumnDefinitions>
 
         <Entry
@@ -40,8 +49,40 @@
             Grid.Column="3"
             Command="{Binding AddPlayerCommand}"
             Text="Enter" />
-        <Grid
+
+        <StackLayout
             Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            Orientation="Horizontal"
+            RadioButtonGroup.GroupName="Ordering"
+            RadioButtonGroup.SelectedValue="{Binding OrderingSelection}"
+            Spacing="5">
+
+            <RadioButton
+                x:Name="AscendingOrderButton"
+                CheckedChanged="OrderButton_CheckedChanged"
+                Content="Ascending Order"
+                Value="1" />
+
+            <RadioButton
+                x:Name="DescendingOrderButton"
+                CheckedChanged="OrderButton_CheckedChanged"
+                Content="Descending Order"
+                Value="2" />
+
+            <RadioButton
+                x:Name="NoneOrderButton"
+                CheckedChanged="OrderButton_CheckedChanged"
+                Content="None"
+                IsChecked="True"
+                Value="0" />
+        </StackLayout>
+
+
+        <Grid
+            Grid.Row="2"
+            Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="4"
             HorizontalOptions="Center">
@@ -51,13 +92,33 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="{x:Type models:PlayerModel}">
                                 <Grid Margin="0,0,0,5">
-                                    <Frame>
+                                    <Grid.Resources>
+                                        <Style x:Key="ActivePlayerFrame" TargetType="Frame">
+                                            <Setter Property="BorderColor" Value="Gray" />
+                                            <Style.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding Active}"
+                                                    TargetType="Frame"
+                                                    Value="True">
+                                                    <Setter Property="BorderColor" Value="Blue" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Resources>
+                                    <Frame Style="{StaticResource ActivePlayerFrame}">
                                         <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:MainPageViewModel}}, Path=OpenNotesCommand}"
+                                                CommandParameter="{Binding .}"
+                                                NumberOfTapsRequired="1" />
                                             <SwipeGestureRecognizer
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:MainPageViewModel}}, Path=DeletePlayerCommand}"
                                                 CommandParameter="{Binding .}"
-                                                Direction="Right" />
+                                                Direction="Left" />
+                                            <DragGestureRecognizer DragStartingCommand="{Binding Source={RelativeSource AncestorType={x:Type viewModel:MainPageViewModel}}, Path=PlayerDragStarted}" />
+                                            <DropGestureRecognizer />
                                         </Frame.GestureRecognizers>
+
                                         <StackLayout Orientation="Horizontal">
                                             <Label>
                                                 <Label.Text>
@@ -67,7 +128,6 @@
                                                     </MultiBinding>
                                                 </Label.Text>
                                             </Label>
-
                                         </StackLayout>
                                     </Frame>
                                 </Grid>
@@ -78,12 +138,82 @@
             </ScrollView>
         </Grid>
 
+
+        <StackLayout
+            Grid.Row="3"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            VerticalOptions="End">
+            <Grid MaximumHeightRequest="100">
+                <Grid.Resources>
+                    <Style x:Key="DieHistoryFrame" TargetType="Frame">
+                        <Setter Property="BorderColor" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding DiceRollsHistory.Count, Converter={StaticResource IsGreaterThan}, ConverterParameter=0}"
+                                TargetType="Frame"
+                                Value="True">
+                                <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Secondary}}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Resources>
+                <Frame
+                    x:Name="DieHistory"
+                    Padding="10,5,10,10"
+                    MaximumHeightRequest="150"
+                    Style="{StaticResource DieHistoryFrame}"
+                    VerticalOptions="End">
+                    <ScrollView>
+                        <StackLayout MaximumHeightRequest="100">
+                            <CollectionView ItemsSource="{Binding DiceRollsHistory, Converter={StaticResource ItemsLimiter}, ConverterParameter=8}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="{x:Type x:String}">
+                                        <Label
+                                            FontSize="Small"
+                                            LineBreakMode="HeadTruncation"
+                                            Text="{Binding .}" />
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </ScrollView>
+                </Frame>
+            </Grid>
+            <Frame
+                x:Name="LatestDieRollFrame"
+                Padding="10,5,10,0"
+                BackgroundColor="#BFF0F0F0"
+                BorderColor="black"
+                IsVisible="False"
+                VerticalOptions="Fill">
+                <Frame.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_LatestDieRollFrame" />
+                </Frame.GestureRecognizers>
+                <ScrollView>
+                    <Label
+                        Grid.Row="1"
+                        Margin="0"
+                        Padding="0,0,0,0"
+                        FontSize="14"
+                        LineBreakMode="WordWrap"
+                        MaximumHeightRequest="100"
+                        Text="{Binding DiceRollsLatest}"
+                        VerticalOptions="End">
+                        <Label.GestureRecognizers>
+                            <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_LatestDieRollFrame" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </ScrollView>
+            </Frame>
+        </StackLayout>
+
         <Frame
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="4"
             BorderColor="Grey">
-            <Grid ColumnSpacing="4" RowSpacing="2">
+            <Grid ColumnSpacing="5" RowSpacing="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height=".25*" />
                     <RowDefinition Height=".25*" />
@@ -91,117 +221,189 @@
                     <RowDefinition Height=".25*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width=".33*" />
-                    <ColumnDefinition Width=".33*" />
-                    <ColumnDefinition Width=".33*" />
+                    <ColumnDefinition Width=".15*" />
+                    <ColumnDefinition Width=".15*" />
+                    <ColumnDefinition Width=".15*" />
+                    <ColumnDefinition Width=".15*" />
+                    <ColumnDefinition Width=".15*" />
+                    <ColumnDefinition Width=".15*" />
                 </Grid.ColumnDefinitions>
                 <!--#region First Row-->
-                <BoxView
+                <!-- <local:StringEmptyConverter x:Key="StringEmptyConverter" />
+                            public class StringEmptyConverter : IValueConverter {
+
+                            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+                                  return string.IsNullOrEmpty((string)value) ? parameter : value;
+                                }
+
+                            public object ConvertBack(
+                                  object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+                                  throw new NotSupportedException();
+                                }
+
+                                }
+
+                    https://stackoverflow.com/questions/15567588/wpf-binding-default-value-for-empty-string
+                    #endregion-->
+                <Grid
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="0"
-                    Color="blue" />
-                <Label
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="0"
-                    FontSize="18"
-                    HorizontalOptions="Center"
-                    Text="Move Up"
-                    VerticalOptions="Center" />
-                <BoxView
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Color="red" />
-                <!--
-                    <Button
-                        x:Name="TimerButton"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
+                    ColumnSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width=".40*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
                         Grid.Row="0"
-                        Grid.RowSpan="2"
+                        Grid.Column="0"
+                        FontSize="Large"
+                        Text="#"
+                        VerticalOptions="Center" />
+
+                    <Entry
+                        x:Name="DieQuantityEntry"
+                        Grid.Row="0"
                         Grid.Column="1"
-                        FontSize="24"
-                        HorizontalOptions="Fill"
-                        Text="0:00"
-                        VerticalOptions="Fill">
-                        <Button.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnTimerClicked" />
-                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
-                        </Button.GestureRecognizers>
-                    </Button>
-                -->
+                        Keyboard="Numeric"
+                        Placeholder="# Dice"
+                        Text="{Binding DieQuantity, FallbackValue='0', Converter={StaticResource StringEmptyConverter}, ConverterParameter='0'}">
+                        <Entry.Behaviors>
+                            <toolkit:NumericValidationBehavior
+                                Flags="ValidateOnValueChanged"
+                                MaximumDecimalPlaces="1"
+                                MaximumValue="100"
+                                MinimumValue="1" />
+                        </Entry.Behaviors>
+                    </Entry>
+
+
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        FontSize="Large"
+                        Text="d"
+                        VerticalOptions="Center" />
+                    <Entry
+                        x:Name="DieSidesEntry"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Keyboard="Numeric"
+                        Placeholder="# Die Sides"
+                        Text="{Binding DieSides, FallbackValue='0', Converter={StaticResource StringEmptyConverter}, ConverterParameter='0'}">
+                        <Entry.Behaviors>
+                            <toolkit:NumericValidationBehavior
+                                Flags="ValidateOnValueChanged"
+                                MaximumDecimalPlaces="1"
+                                MaximumValue="100"
+                                MinimumValue="1" />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                </Grid>
+
+
                 <Button
+                    x:Name="TimerButton"
                     Grid.Row="0"
                     Grid.RowSpan="2"
-                    Grid.Column="1"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
                     FontSize="24"
                     HorizontalOptions="Fill"
                     Text="{Binding TimerButton}"
                     VerticalOptions="Fill">
                     <Button.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding StartTimerCommand}" NumberOfTapsRequired="1" />
+                        <TapGestureRecognizer
+                            Command="{Binding StartTimerCommand}"
+                            NumberOfTapsRequired="1"
+                            Tapped="TapGestureRecognizer_Tapped" />
                         <TapGestureRecognizer Command="{Binding ClearTimerCommand}" NumberOfTapsRequired="2" />
                     </Button.GestureRecognizers>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="0.8" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
                 </Button>
-                <BoxView
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="2"
-                    HorizontalOptions="End"
-                    Color="Purple" />
+
                 <Button
                     Grid.Row="0"
                     Grid.RowSpan="2"
-                    Grid.Column="2"
+                    Grid.Column="4"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
                     Command="{Binding NextTurnCommand}"
                     FontSize="18"
                     HorizontalOptions="Fill"
                     Text="Next Turn"
                     VerticalOptions="Fill" />
+
+
                 <!--#endregion-->
 
                 <!--#region second row-->
-                <BoxView
+                <Frame
                     Grid.Row="2"
                     Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Color="Green" />
-                <Label
-                    x:Name="RoundCounter"
-                    Grid.Row="2"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    FontSize="18"
-                    HorizontalOptions="Center"
-                    Text="{Binding Counters.RoundCounter}"
-                    VerticalOptions="Center" />
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
+                    Padding="0"
+                    BorderColor="{AppThemeBinding Light={StaticResource Primary},
+                                                  Dark={StaticResource White}}"
+                    CornerRadius="10">
+
+                    <Label
+                        x:Name="RoundCounter"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Text="{Binding Counters.RoundCounter}"
+                        VerticalOptions="Center" />
+
+                </Frame>
+
                 <!--#endregion-->
 
                 <!--#region Third row-->
-                <BoxView
+
+                <Button
+                    x:Name="RollDiceButton"
                     Grid.Row="2"
                     Grid.RowSpan="3"
                     Grid.Column="0"
-                    Color="BlueViolet" />
-                <Label
-                    Grid.Row="2"
-                    Grid.RowSpan="3"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
+                    Command="{Binding RollDiceCommand}"
                     FontSize="18"
-                    HorizontalOptions="Center"
-                    Text="Move Down"
-                    VerticalOptions="Center" />
+                    HorizontalOptions="Fill"
+                    Pressed="RollDiceButton_Pressed"
+                    Text="Roll Dice"
+                    VerticalOptions="Fill" />
 
-                <BoxView
-                    Grid.Row="2"
-                    Grid.RowSpan="3"
-                    Grid.Column="2"
-                    HorizontalOptions="End"
-                    Color="Aqua" />
                 <Button
                     Grid.Row="2"
                     Grid.RowSpan="3"
-                    Grid.Column="2"
+                    Grid.Column="4"
+                    Grid.ColumnSpan="2"
+                    Margin="2,2,2,2"
                     Command="{Binding PreviousTurnCommand}"
                     FontSize="18"
                     HorizontalOptions="Fill"
@@ -209,10 +411,7 @@
                     VerticalOptions="Fill" />
                 <!--#endregion-->
             </Grid>
-
         </Frame>
+
     </Grid>
-
-
-
 </ContentPage>

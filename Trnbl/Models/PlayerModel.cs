@@ -1,6 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Trnbl.Models;
 
@@ -12,6 +12,7 @@ public partial class PlayerModel : ObservableObject
         Id = Guid.NewGuid();
         OrderNumber = num ?? default(int);
         Name = name;
+        Notes = new ObservableCollection<NoteModel>();
     }
 
     public Guid Id { get; }
@@ -23,9 +24,12 @@ public partial class PlayerModel : ObservableObject
     public string name;
 
     [ObservableProperty]
-    public List<NoteModel> notes;
+    public ObservableCollection<NoteModel> notes;
 
-    public void AddNote(string content)
+    [ObservableProperty]
+    public bool active;
+
+    public void AddPlayerNote(string content)
     {
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -36,9 +40,9 @@ public partial class PlayerModel : ObservableObject
         Notes.Add(note);
     }
 
-    public async void RemoveNote(NoteModel note)
+    public async void DeletePlayerNote(NoteModel note)
     {
-        if (note != null)
+        if (note == null)
         {
             return;
         }
@@ -53,10 +57,11 @@ public partial class PlayerModel : ObservableObject
         };
     }
 
-    public void EditList(NoteModel note)
+    public void EditPlayerNote(NoteModel note)
     {
-        var index = Notes.FindIndex(e => e.Id == note.Id);
+        var index = Notes.IndexOf(Notes.Where(e => e.Id == note.Id).FirstOrDefault());
         Notes[index].EditNote(note.Content);
     }
+
 }
 

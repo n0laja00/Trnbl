@@ -7,6 +7,7 @@ public class NoteModel
 {
     [Key]
     public Guid Id { get; }
+
     [Required]
     [MinLength(1)]
     public string Content { get; set; }
