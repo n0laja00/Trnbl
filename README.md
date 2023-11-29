@@ -4,6 +4,6 @@ Turnable is a mobile application built with .NET MAUI, and it's designed for pla
 
 # Features
 - [x] Roll dice
-       - [x] See past rolled dice and who rolled them. 
+     - [x] See past rolled dice and who rolled them. 
 - [x] Track turns
 - [x] Stopwatch 
