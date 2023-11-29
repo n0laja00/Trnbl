@@ -13,8 +13,8 @@ Turnable is a mobile application built with .NET MAUI, and it's designed for pla
      - [x] Remove players 
      - [x] Adjust ordering to your liking
      - [x] Keep track on whose turn it is
-     - [x] Number of turns counter
-     - ![image](https://github.com/n0laja00/Trnbl/assets/73889850/fd6ffb74-9609-4599-957f-0cf2b9bf1c7b)
+     - [x] Number of rounds counter
+     - ![image](https://github.com/n0laja00/Trnbl/assets/73889850/eb9a4098-3540-4fb3-b3a7-d10ab53afd1d)
 - [x] Stopwatch
      - [x] Track time with stopwatch. 
      - [x] Clear stopwatch
