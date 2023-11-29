@@ -18,7 +18,7 @@ Turnable is a mobile application built with .NET MAUI, and it's designed for pla
 - [x] Stopwatch
      - [x] Track time with stopwatch. 
      - [x] Clear stopwatch
-     - ![image](https://github.com/n0laja00/Trnbl/assets/73889850/26db73a9-7ea8-49b3-bc0d-1d736f311c0d) 
+     - ![image](https://github.com/n0laja00/Trnbl/assets/73889850/b382f36a-f600-47e8-8f0a-dd2f44e85d62)
 - [x] Take notes
      - [x] Add Notes
      - [x] Edit Notes  
