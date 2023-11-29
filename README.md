@@ -12,7 +12,7 @@ Roll as many dice as you want! Keep track of current dice and past dice with die
 
 Die history can be deleted with a motion. 
 
-![image](https://gyazo.com/1a523fc40f5df5d66cf66d5b566968e9)
+![gif](https://gyazo.com/1a523fc40f5df5d66cf66d5b566968e9)
 
 ## Stopwatch
 Keep track of time with a stopwatch for those timed challenges!
